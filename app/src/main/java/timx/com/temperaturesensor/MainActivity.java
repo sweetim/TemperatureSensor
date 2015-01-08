@@ -1,14 +1,22 @@
 package timx.com.temperaturesensor;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Set;
+
 
 public class MainActivity extends ActionBarActivity {
+    private RecyclerView bluetoothRecylerView;
+    private RecyclerView.Adapter bluetoothRecylerViewAdapter;
+    private RecyclerView.LayoutManager bluetoothRecylerViewManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +28,15 @@ public class MainActivity extends ActionBarActivity {
             // Device does not support Bluetooth
         }
 
+        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+        // If there are paired devices
+        if (pairedDevices.size() > 0) {
+            // Loop through paired devices
+            for (BluetoothDevice device : pairedDevices) {
+                // Add the name and address to an array adapter to show in a ListView
+                Log.d("Temp", device.getName() + " " + device.getAddress());
+            }
+        }
 
     }
 
