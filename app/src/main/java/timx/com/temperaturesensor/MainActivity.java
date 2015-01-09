@@ -3,25 +3,45 @@ package timx.com.temperaturesensor;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.Set;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends BaseActivity {
+    private DrawerLayout drawerLayout;
     private RecyclerView bluetoothRecylerView;
     private RecyclerView.Adapter bluetoothRecylerViewAdapter;
     private RecyclerView.LayoutManager bluetoothRecylerViewManager;
 
+    private static final int DATASET_COUNT = 10;
+    private String[] mDataSet;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+
+        bluetoothRecylerView = (RecyclerView) findViewById(R.id.recylerView_bluetooth_device);
+        bluetoothRecylerView.setHasFixedSize(true);
+        bluetoothRecylerViewManager = new LinearLayoutManager(this);
+
+        mDataSet = new String[DATASET_COUNT];
+        for (int i = 0; i < DATASET_COUNT; i++) {
+            mDataSet[i] = "This is " + i;
+        }
+
+        bluetoothRecylerView.setLayoutManager(bluetoothRecylerViewManager);
+        bluetoothRecylerViewAdapter = new BluetoothDeviceAdapter(mDataSet);
+        bluetoothRecylerView.setAdapter(bluetoothRecylerViewAdapter);
 
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
@@ -40,6 +60,9 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+    @Override protected int getLayoutResource() {
+        return R.layout.activity_main;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

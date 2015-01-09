@@ -15,10 +15,16 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView mTextView;
-        public ViewHolder(TextView v) {
+
+        public ViewHolder(View v) {
             super(v);
-            mTextView = v;
+            mTextView = (TextView) v.findViewById(R.id.textView_bluetooth_row_name);
         }
+
+        public TextView getTextView() {
+            return  mTextView;
+        }
+
     }
 
     public BluetoothDeviceAdapter(String[] myDataset) {
@@ -28,18 +34,18 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
 
     @Override
     public BluetoothDeviceAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.bluetooth_row_item, viewGroup, false);
 
-
-        return null;
+        return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(BluetoothDeviceAdapter.ViewHolder viewHolder, int i) {
-
+        viewHolder.getTextView().setText(mDataset[i]);
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return mDataset.length;
     }
 }
