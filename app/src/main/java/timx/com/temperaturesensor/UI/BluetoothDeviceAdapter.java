@@ -17,7 +17,6 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
     private List<BluetoothDeviceModel> mBluetoothDevices;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         public TextView mTextView_name;
         public TextView mTextView_address;
 
