@@ -1,4 +1,4 @@
-package timx.com.temperaturesensor;
+package timx.com.temperaturesensor.UI;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,31 +6,31 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
+import timx.com.temperaturesensor.R;
+
 /**
  * Created by Lenovo on 9/1/2015.
  */
 public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDeviceAdapter.ViewHolder> {
-    private String[] mDataset;
+    private List<BluetoothDeviceModel> mBluetoothDevices;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView mTextView;
+        public TextView mTextView_name;
+        public TextView mTextView_address;
 
         public ViewHolder(View v) {
             super(v);
-            mTextView = (TextView) v.findViewById(R.id.textView_bluetooth_row_name);
+            mTextView_name = (TextView) v.findViewById(R.id.textView_bluetooth_row_name);
+            mTextView_address = (TextView) v.findViewById(R.id.textView_bluetooth_row_address);
         }
-
-        public TextView getTextView() {
-            return  mTextView;
-        }
-
     }
 
-    public BluetoothDeviceAdapter(String[] myDataset) {
-        mDataset = myDataset;
+    public BluetoothDeviceAdapter(List<BluetoothDeviceModel> devices) {
+        mBluetoothDevices = devices;
     }
-
 
     @Override
     public BluetoothDeviceAdapter.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -41,11 +41,14 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
 
     @Override
     public void onBindViewHolder(BluetoothDeviceAdapter.ViewHolder viewHolder, int i) {
-        viewHolder.getTextView().setText(mDataset[i]);
+        BluetoothDeviceModel device = mBluetoothDevices.get(i);
+
+        viewHolder.mTextView_name.setText(device.name);
+        viewHolder.mTextView_address.setText(device.address);
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mBluetoothDevices.size();
     }
 }

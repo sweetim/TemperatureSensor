@@ -2,29 +2,30 @@ package timx.com.temperaturesensor;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Intent;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+
+import timx.com.temperaturesensor.UI.BluetoothDeviceAdapter;
+import timx.com.temperaturesensor.UI.BluetoothDeviceModel;
+import timx.com.temperaturesensor.UI.DividerItemDecorator;
 
 
 public class MainActivity extends BaseActivity {
-    private DrawerLayout drawerLayout;
     private RecyclerView bluetoothRecylerView;
     private RecyclerView.Adapter bluetoothRecylerViewAdapter;
     private RecyclerView.LayoutManager bluetoothRecylerViewManager;
 
-    private static final int DATASET_COUNT = 10;
-    private String[] mDataSet;
+    private List<BluetoothDeviceModel> mBluetoothDevices = new ArrayList<>();;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,16 +33,25 @@ public class MainActivity extends BaseActivity {
 
         bluetoothRecylerView = (RecyclerView) findViewById(R.id.recylerView_bluetooth_device);
         bluetoothRecylerView.setHasFixedSize(true);
+        bluetoothRecylerView.addItemDecoration(new DividerItemDecorator(this, DividerItemDecorator.VERTICAL_LIST));
         bluetoothRecylerViewManager = new LinearLayoutManager(this);
-
-        mDataSet = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            mDataSet[i] = "This is " + i;
-        }
-
         bluetoothRecylerView.setLayoutManager(bluetoothRecylerViewManager);
-        bluetoothRecylerViewAdapter = new BluetoothDeviceAdapter(mDataSet);
+        bluetoothRecylerViewAdapter = new BluetoothDeviceAdapter(mBluetoothDevices);
         bluetoothRecylerView.setAdapter(bluetoothRecylerViewAdapter);
+        bluetoothRecylerView.setItemAnimator(new DefaultItemAnimator());
+
+        bluetoothRecylerView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
+                return false;
+            }
+
+            @Override
+            public void onTouchEvent(RecyclerView recyclerView, MotionEvent motionEvent) {
+
+            }
+        });
+
 
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter == null) {
@@ -49,15 +59,14 @@ public class MainActivity extends BaseActivity {
         }
 
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        // If there are paired devices
         if (pairedDevices.size() > 0) {
-            // Loop through paired devices
             for (BluetoothDevice device : pairedDevices) {
-                // Add the name and address to an array adapter to show in a ListView
-                Log.d("Temp", device.getName() + " " + device.getAddress());
+                BluetoothDeviceModel newDevice = new BluetoothDeviceModel(device.getName(), device.getAddress());
+                mBluetoothDevices.add(newDevice);
             }
-        }
 
+            bluetoothRecylerViewAdapter.notifyItemInserted(mBluetoothDevices.size());
+        }
     }
 
     @Override protected int getLayoutResource() {
