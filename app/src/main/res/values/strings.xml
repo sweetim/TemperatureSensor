@@ -6,4 +6,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_activity_base">BaseActivity</string>
     <string name="refresh">Refresh</string>
+    <string name="paired">Paired</string>
+    <string name="title_activity_temperature">TemperatureActivity</string>
+
 </resources>

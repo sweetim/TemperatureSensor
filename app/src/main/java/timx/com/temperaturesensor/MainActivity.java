@@ -12,11 +12,11 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +29,8 @@ import timx.com.temperaturesensor.UI.RecyclerItemClickListener;
 
 
 public class MainActivity extends ActionBarActivity {
+    public final static String ACTIVITY_BT_ADDRESS = "timx.com.temperaturesensor.MSG";
+
     private BluetoothAdapter btAdapter;
 
     private ProgressBar progressBar_btDiscoveryStatus;
@@ -36,12 +38,14 @@ public class MainActivity extends ActionBarActivity {
     private RecyclerView.Adapter bluetoothRecylerViewAdapter;
     private RecyclerView.LayoutManager bluetoothRecylerViewManager;
 
-    private List<BluetoothDeviceModel> mBluetoothDevices = new ArrayList<>();;
+    private static List<BluetoothDeviceModel> mBluetoothDevices = new ArrayList<>();;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context = this;
         Toolbar main_toolbar = (Toolbar) findViewById(R.id.toolbar_main);
 
         if (main_toolbar != null) {
@@ -63,7 +67,16 @@ public class MainActivity extends ActionBarActivity {
                 new RecyclerItemClickListener.OnItemClickListener(){
             @Override
             public void onItemClick(View view, int position) {
-                Log.d("haha", Integer.toString(position));
+                Intent intent = new Intent(context, TemperatureActivity.class);
+
+                if (btAdapter.isDiscovering()) {
+                    progressBar_btDiscoveryStatus.setVisibility(View.INVISIBLE);
+                    btAdapter.cancelDiscovery();
+                }
+
+                TextView v = (TextView) view.findViewById(R.id.textView_bluetooth_row_address);
+                intent.putExtra(ACTIVITY_BT_ADDRESS, v.getText().toString());
+                startActivity(intent);
             }
         }));
 
@@ -78,12 +91,25 @@ public class MainActivity extends ActionBarActivity {
 
         if (bondedDevice.size() > 0) {
             for (BluetoothDevice device: bondedDevice) {
-                BluetoothDeviceModel newDevice = new BluetoothDeviceModel(device.getName(), device.getAddress(), true);
-                mBluetoothDevices.add(newDevice);
+                if (!isBTDeviceSame(device)) {
+                    BluetoothDeviceModel newDevice = new BluetoothDeviceModel(device.getName(), device.getAddress(), true);
+                    mBluetoothDevices.add(newDevice);
+                }
             }
             bluetoothRecylerViewAdapter.notifyDataSetChanged();
         }
         startBluetoothDiscovery();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (btAdapter != null) {
+            btAdapter.cancelDiscovery();
+        }
+
+        this.unregisterReceiver(mBTReceiver);
     }
 
     @Override

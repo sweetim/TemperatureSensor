@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -19,11 +20,13 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView mTextView_name;
         public TextView mTextView_address;
+        public ImageView mImageView_bluetoothPaired;
 
         public ViewHolder(View v) {
             super(v);
             mTextView_name = (TextView) v.findViewById(R.id.textView_bluetooth_row_name);
             mTextView_address = (TextView) v.findViewById(R.id.textView_bluetooth_row_address);
+            mImageView_bluetoothPaired = (ImageView) v.findViewById(R.id.imageView_bluetooth_paired);
         }
     }
 
@@ -44,6 +47,13 @@ public class BluetoothDeviceAdapter extends RecyclerView.Adapter<BluetoothDevice
 
         viewHolder.mTextView_name.setText(device.name);
         viewHolder.mTextView_address.setText(device.address);
+
+        if (device.paired) {
+            viewHolder.mImageView_bluetoothPaired.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.mImageView_bluetoothPaired.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     @Override
