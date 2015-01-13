@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,7 +6,23 @@
     tools:context="timx.com.temperaturesensor.TemperatureActivity">
 
     <include android:id="@+id/toolbar_main" layout="@layout/toolbar" />
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 
-</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/degree"
+        android:id="@+id/textView"
+        android:layout_below="@+id/toolbar_main"
+        android:layout_centerHorizontal="true"
+        android:textSize="@dimen/temperature_text_size"
+        android:layout_marginTop="@dimen/temperature_top_margin" />
+
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart_temperature"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_alignParentBottom="true" />
+
+
+</RelativeLayout>

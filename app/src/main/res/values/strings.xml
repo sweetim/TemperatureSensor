@@ -10,5 +10,6 @@
     <string name="title_activity_temperature">TemperatureActivity</string>
     <string name="reconnect">Reconnect</string>
     <string name="disconnect">Disconnect</string>
-
+    <string name="degree"><b>°</b></string>
+    <string name="question_mark">\?</string>
 </resources>
