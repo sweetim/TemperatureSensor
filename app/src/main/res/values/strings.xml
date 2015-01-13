@@ -8,5 +8,7 @@
     <string name="refresh">Refresh</string>
     <string name="paired">Paired</string>
     <string name="title_activity_temperature">TemperatureActivity</string>
+    <string name="reconnect">Reconnect</string>
+    <string name="disconnect">Disconnect</string>
 
 </resources>
