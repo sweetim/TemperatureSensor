@@ -152,7 +152,7 @@ public class TemperatureActivity extends ActionBarActivity {
                             Log.d("hehe", "connecting");
                             break;
                         case BluetoothService.STATE_CONNECTED:
-                            Log.d("hehe", "con");
+                            Log.d("hehe", "connected");
                             break;
                     }
                 }
