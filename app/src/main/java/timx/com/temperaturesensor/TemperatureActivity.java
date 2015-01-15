@@ -3,16 +3,17 @@ package timx.com.temperaturesensor;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 
 import timx.com.temperaturesensor.Connectivity.Bluetooth.BTServiceConstant;
 import timx.com.temperaturesensor.Connectivity.Bluetooth.BluetoothService;
+import timx.com.temperaturesensor.Temperature.Temperature;
 
 
 public class TemperatureActivity extends ActionBarActivity {
@@ -33,10 +35,14 @@ public class TemperatureActivity extends ActionBarActivity {
 
     private LineChart chart_temperature;
 
+    private TextView textView_temperature;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_temperature);
+
+        textView_temperature = (TextView) findViewById(R.id.textView_temperature);
 
         mBTAdapter = BluetoothAdapter.getDefaultAdapter();
 
@@ -66,7 +72,7 @@ public class TemperatureActivity extends ActionBarActivity {
         chart_temperature.setDrawGridBackground(false);
         chart_temperature.setDrawVerticalGrid(false);
 
-        setData(10, 10);
+        //setData(10, 10);
 
     }
 
@@ -113,7 +119,8 @@ public class TemperatureActivity extends ActionBarActivity {
 
         if (mBTService == null) {
             mBTService = new BluetoothService(this, btHandler);
-            connectDevice(btAddress, true);
+            BluetoothDevice device = mBTAdapter.getRemoteDevice(btAddress);
+            mBTService.connect(device, true);
         }
     }
 
@@ -161,7 +168,11 @@ public class TemperatureActivity extends ActionBarActivity {
                     break;
                 case BTServiceConstant.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
-                    String readMessage = new String(readBuf, 0, msg.arg1);
+                    if (msg.arg1 == 2) {
+                        float temp = Temperature.convertRawData(readBuf);
+                        Resources res = getResources();
+                        textView_temperature.setText(String.format("%.2f", temp) + res.getString(R.string.degree));
+                    }
                     break;
                 case BTServiceConstant.MESSAGE_DEVICE_NAME:
                     Log.d("hehe", "name");
@@ -195,10 +206,5 @@ public class TemperatureActivity extends ActionBarActivity {
         if (data.length > 0) {
             mBTService.write(data);
         }
-    }
-
-    private void connectDevice(String address, boolean secure) {
-        BluetoothDevice device = mBTAdapter.getRemoteDevice(address);
-        mBTService.connect(device, secure);
     }
 }
